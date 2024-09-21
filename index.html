@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #02075d;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        .box {
+            background: rgb(240, 248, 255,0.5);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 35px 8px black;
+            width: 350px;
+            & :hover{
+                cursor:pointer;
+            }
+            & h1 {
+            text-align: center;
+            font-size: 35px;
+            }
+        
+            label {
+                font-weight: bold;
+                margin: 20px 0px;
+                font-size: 20px;
+            }
+            #result {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bolder;
+            border: 1px solid lightgrey;
+            color:orange;
+            }
+        }
+        select,
+        button,
+        input {
+          width: 100%;
+          padding: 10px;
+          margin: 5px 0px;
+          border: 1px solid lightgray;
+          border-radius: 5px;
+          font-size: 17px;
+        }
+        input {
+          width: 94%;
+          font-size: 15px;
+        }
+
+        button {
+        background-color: #02075d;
+        color: aliceblue;
+        font-weight: bolder;
+        align-items: center;
+        border: none;
+        &:hover{
+            background-color:black;
+            color: aliceblue;
+            }
+        } 
+      }
+
+
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <h1>Currency Converter</h1>
+      <label for="fromcountry">From</label>
+      <select name="fromcountry" id="fromcountry"></select>
+      <br />
+      <label for="tocountry">To</label>
+      <select name="tocountry" id="tocountry"></select>
+      <br />
+      <label for="amount">Amount</label>
+      <input type="number" id="amount" />
+      <br />
+      <label for="result">Result</label>
+      <input type="text" name="result" id="result" />
+      <br />
+      <div class="buttonn">
+        <button id="buttons">Convert</button>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        let convert = document.getElementById("buttons");
+        convert.addEventListener("click", convertcurrency);
+
+        function buildlist() {
+          let list;
+          return fetch(
+            "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies.json"
+          )
+            .then((res) => res.json())
+            .then((data) => {
+              list = data;
+
+              let fromcountry = document.getElementById("fromcountry");
+              let tocountry = document.getElementById("tocountry");
+
+              for (let i in list) {
+                let fromoption = document.createElement("option");
+                fromoption.id = `${i}_from`;
+                fromoption.value = i;
+                fromoption.textContent = list[i];
+                fromcountry.append(fromoption);
+                let tooption = document.createElement("option");
+                tooption.id = `${i}_to`;
+                tooption.textContent = list[i];
+                tooption.value = i;
+                tocountry.append(tooption); //AJAX - xml  JSON
+              }
+            });
+        }
+
+        let currencyInfo;
+
+        function loadCurrencyValues() {
+          fetch(
+            "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json"
+          )
+            .then((res) => res.json())
+            .then((data) => (currencyInfo = data));
+        }
+
+        loadCurrencyValues();
+        buildlist();
+
+        function convertcurrency() {
+          let fromcountry = document.getElementById("fromcountry").value;
+          let tocountry = document.getElementById("tocountry").value;
+          let amounttoconvert = document.getElementById("amount").value;
+          let result = document.getElementById("result");
+
+          if (fromcountry && tocountry) {
+            let { eur } = currencyInfo;
+            // console.log(eur);
+            let convertedamount = eur[tocountry] / eur[fromcountry];
+            result.value = (amounttoconvert * convertedamount).toFixed(2) + ` ${tocountry}`;
+            // console.log(currencyInfo , selectedfromcountry , selectedtocountry)
+            if (result.value == (0).toFixed(2) + ` ${tocountry}`) {
+              result.value = " ";
+              alert("Enter values..");
+            }
+          }
+        }
+      });
+
+      // a={b:1,e:2,d:3};
+      // let {c}= a;
+      // console.log(c);
+    </script>
+  </body>
+</html>
