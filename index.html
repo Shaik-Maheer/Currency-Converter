@@ -3,92 +3,120 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Currency Converter</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
-        background-color: #02075d;
+        font-family: "Poppins", sans-serif;
+        background-color: #121212;
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
-        .box {
-            background: rgb(240, 248, 255,0.5);
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 35px 8px black;
-            width: 350px;
-            & :hover{
-                cursor:pointer;
-            }
-            & h1 {
-            text-align: center;
-            font-size: 35px;
-            }
-        
-            label {
-                font-weight: bold;
-                margin: 20px 0px;
-                font-size: 20px;
-            }
-            #result {
-            text-align: center;
-            font-size: 20px;
-            font-weight: bolder;
-            border: 1px solid lightgrey;
-            color:orange;
-            }
-        }
-        select,
-        button,
-        input {
-          width: 100%;
-          padding: 10px;
-          margin: 5px 0px;
-          border: 1px solid lightgray;
-          border-radius: 5px;
-          font-size: 17px;
-        }
-        input {
-          width: 94%;
-          font-size: 15px;
-        }
-
-        button {
-        background-color: #02075d;
-        color: aliceblue;
-        font-weight: bolder;
-        align-items: center;
-        border: none;
-        &:hover{
-            background-color:black;
-            color: aliceblue;
-            }
-        } 
+        margin: 0;
       }
 
+      .box {
+        background-color: #1e1e1e;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(251, 210, 4, 0.5);
+        width: 400px;
+        transition: transform 0.3s ease-in-out;
+        border: 2px solid #d4af37;
 
+        &:hover {
+          transform: translateY(-8px);
+        }
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 36px;
+        color: #d4af37;
+        margin-bottom: 20px;
+      }
+
+      label {
+        font-weight: 600;
+        font-size: 18px;
+        color: #fff;
+        display: block;
+        margin: 10px 0 5px;
+      }
+
+      select,
+      input {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border: 2px solid #d4af37;
+        border-radius: 10px;
+        font-size: 16px;
+        background-color: #2b2b2b;
+        color: #fff;
+      }
+
+      select:focus,
+      input:focus {
+        border-color: #d4af37;
+        outline: none;
+      }
+      input {
+        background-color: #2b2b2b;
+        font-weight: bold;
+        color: #d4af37;
+        width: 94%;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        background-color: #d4af37;
+        color: #121212;
+        border: none;
+        font-size: 18px;
+        font-weight: bold;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+        margin-top: 15px;
+      }
+
+      button:hover {
+        background-color: #b38b27;
+      }
+
+      button:active {
+        background-color: #d4af37;
+        transform: translateY(2px);
+      }
+
+      #result {
+        text-align: center;
+        font-size: 22px;
+        font-weight: bold;
+        color: #d4af37;
+      }
     </style>
   </head>
   <body>
     <div class="box">
-      <h1>Currency Converter</h1>
+      <h1>💰 Currency Converter</h1>
       <label for="fromcountry">From</label>
       <select name="fromcountry" id="fromcountry"></select>
-      <br />
+
       <label for="tocountry">To</label>
       <select name="tocountry" id="tocountry"></select>
-      <br />
+
       <label for="amount">Amount</label>
-      <input type="number" id="amount" />
-      <br />
+      <input type="number" id="amount" placeholder="Enter amount..." />
+
       <label for="result">Result</label>
-      <input type="text" name="result" id="result" />
-      <br />
-      <div class="buttonn">
-        <button id="buttons">Convert</button>
-      </div>
+      <input type="text" name="result" id="result" readonly class="result" />
+
+      <button id="buttons">Convert</button>
     </div>
+
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         let convert = document.getElementById("buttons");
@@ -112,11 +140,12 @@
                 fromoption.value = i;
                 fromoption.textContent = list[i];
                 fromcountry.append(fromoption);
+
                 let tooption = document.createElement("option");
                 tooption.id = `${i}_to`;
                 tooption.textContent = list[i];
                 tooption.value = i;
-                tocountry.append(tooption); //AJAX - xml  JSON
+                tocountry.append(tooption);
               }
             });
         }
@@ -142,21 +171,17 @@
 
           if (fromcountry && tocountry) {
             let { eur } = currencyInfo;
-            // console.log(eur);
             let convertedamount = eur[tocountry] / eur[fromcountry];
-            result.value = (amounttoconvert * convertedamount).toFixed(2) + ` ${tocountry}`;
-            // console.log(currencyInfo , selectedfromcountry , selectedtocountry)
-            if (result.value == (0).toFixed(2) + ` ${tocountry}`) {
-              result.value = " ";
-              alert("Enter values..");
+            result.value =
+              (amounttoconvert * convertedamount).toFixed(2) + ` ${tocountry}`;
+
+            if (result.value === (0).toFixed(2) + ` ${tocountry}`) {
+              result.value = "";
+              alert("Enter valid values.");
             }
           }
         }
       });
-
-      // a={b:1,e:2,d:3};
-      // let {c}= a;
-      // console.log(c);
     </script>
   </body>
 </html>
