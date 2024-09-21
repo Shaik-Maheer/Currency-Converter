@@ -33,7 +33,6 @@
         text-align: center;
         font-size: 36px;
         color: #d4af37;
-        margin-bottom: 20px;
       }
 
       label {
@@ -172,12 +171,20 @@
           if (fromcountry && tocountry) {
             let { eur } = currencyInfo;
             let convertedamount = eur[tocountry] / eur[fromcountry];
-            result.value =
-              (amounttoconvert * convertedamount).toFixed(2) + ` ${tocountry}`;
-
-            if (result.value === (0).toFixed(2) + ` ${tocountry}`) {
-              result.value = "";
-              alert("Enter valid values.");
+            if ((fromcountry == "1000sats" || tocountry == "1000sats") && amounttoconvert) {
+              alert("Select the valid options..");
+              result.value = " ";
+              location.reload();
+            } else if (amounttoconvert) {
+              result.value =
+                (amounttoconvert * convertedamount).toFixed(2) +
+                " " +
+                ${tocountry};
+              console.log(fromcountry);
+              console.log(tocountry);
+            } else {
+              result.value = " ";
+              alert("Select the valid options..");
             }
           }
         }
